@@ -1,1 +1,6 @@
 /target
+
+# Next.js landing site
+site/.next/
+site/out/
+site/node_modules/

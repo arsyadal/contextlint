@@ -95,10 +95,10 @@ Score: 0/100
 Status: Very Noisy
 
 Issues found:
-[CRITICAL] Risky instruction contains 'drop table'.
+[CRITICAL] Risky instruction contains 'drop table'. <!-- contextlint-ignore -->
 [MEDIUM] Duplicate instruction found in 4 files.
 [MEDIUM] Referenced command `npm run build` is not available.
-[MEDIUM] Referenced path `docs/missing-architecture.md` does not exist.
+[MEDIUM] Referenced path `docs/missing-architecture.md` does not exist. <!-- contextlint-ignore -->
 [MEDIUM] Section 'Noisy Historical Context' is noisy/long.
 ```
 
@@ -106,6 +106,17 @@ More docs:
 
 - [CLI reference](docs/cli.md)
 - [Configuration](docs/config.md)
+
+## Landing site
+
+The marketing site lives in `site/` and is built with Next.js, shadcn-style components, Radix UI primitives, and Framer Motion. <!-- contextlint-ignore -->
+
+```bash
+cd site
+npm install
+npm run dev
+npm run build
+```
 
 ## GitHub Action
 
