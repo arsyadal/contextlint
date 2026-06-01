@@ -74,6 +74,12 @@ contextlint completions bash > contextlint.bash
 contextlint generate agents --output AGENTS.generated.md
 ```
 
+Try demo fixture:
+
+```bash
+contextlint scan --path examples/fixtures/messy-context
+```
+
 More docs:
 
 - [CLI reference](docs/cli.md)

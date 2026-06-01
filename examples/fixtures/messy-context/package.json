@@ -1,0 +1,14 @@
+{
+  "name": "messy-context-demo",
+  "private": true,
+  "scripts": {
+    "test": "vitest"
+  },
+  "dependencies": {
+    "react": "latest",
+    "next": "latest"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  }
+}
