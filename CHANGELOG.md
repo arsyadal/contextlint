@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Add demo fixture for messy AI-agent context.
+- Add README example output using the demo fixture.
+- Document noisy, duplicate, risky, outdated, missing file, and missing command examples.
+
 ## 0.1.2
 
 - Add composite GitHub Action via `uses: arsyadal/contextlint@v0.1.2`.

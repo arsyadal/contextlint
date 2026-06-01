@@ -20,7 +20,7 @@ Implemented:
 - `contextlint init`
 - `contextlint generate agents`
 - `contextlint completions <shell>`
-- GitHub Action via `uses: arsyadal/contextlint@v0.1.2`
+- GitHub Action via `uses: arsyadal/contextlint@v0.1.3`
 - File discovery for common AI context files
 - Approximate token estimation
 - Duplicate instruction detection
@@ -80,6 +80,28 @@ Try demo fixture:
 contextlint scan --path examples/fixtures/messy-context
 ```
 
+Example output (abridged):
+
+```txt
+ContextLint v0.1.3
+
+Project: examples/fixtures/messy-context
+
+Files scanned: 6
+✓ README.md (349 tokens)
+✓ docs/noisy.md (5152 tokens)
+
+Score: 0/100
+Status: Very Noisy
+
+Issues found:
+[CRITICAL] Risky instruction contains 'drop table'.
+[MEDIUM] Duplicate instruction found in 4 files.
+[MEDIUM] Referenced command `npm run build` is not available.
+[MEDIUM] Referenced path `docs/missing-architecture.md` does not exist.
+[MEDIUM] Section 'Noisy Historical Context' is noisy/long.
+```
+
 More docs:
 
 - [CLI reference](docs/cli.md)
@@ -98,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: arsyadal/contextlint@v0.1.2
+      - uses: arsyadal/contextlint@v0.1.3
         with:
           fail-under: "70"
 ```
