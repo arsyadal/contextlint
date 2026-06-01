@@ -55,7 +55,14 @@ docs/**/*.md
 .github/copilot-instructions.md
 ```
 
+## Development
+
+```bash
+cargo check
+cargo test
+cargo run -- scan
+```
+
 ## Product principle
 
 The best AI context is not the longest context. It is the clearest, safest, and most relevant context.
-# contextlint

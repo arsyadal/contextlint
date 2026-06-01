@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "Lint, score, and compress AI agent context files"
 license = "MIT"
-repository = "https://github.com/contextlint/contextlint"
+repository = "https://github.com/arsyadal/contextlint"
 
 [dependencies]
 anyhow = "1"
