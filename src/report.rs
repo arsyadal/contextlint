@@ -31,10 +31,10 @@ pub fn print_terminal(root: &Path, result: &ScanResult) {
         result.total_estimated_tokens
     );
     println!("- Estimated waste: {}", result.estimated_waste_tokens);
-    if result.total_estimated_tokens > 0 {
-        let reduction = result.estimated_waste_tokens * 100 / result.total_estimated_tokens;
-        println!("- Potential reduction: {reduction}%");
-    }
+    let reduction = (result.estimated_waste_tokens * 100)
+        .checked_div(result.total_estimated_tokens)
+        .unwrap_or(0);
+    println!("- Potential reduction: {reduction}%");
     println!();
 
     if result.issues.is_empty() {
