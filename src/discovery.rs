@@ -29,7 +29,7 @@ pub fn discover_context_files(
 
     for entry in WalkDir::new(root)
         .into_iter()
-        .filter_entry(|entry| should_enter(entry))
+        .filter_entry(should_enter)
         .filter_map(Result::ok)
     {
         if !entry.file_type().is_file() {

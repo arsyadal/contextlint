@@ -120,9 +120,8 @@ fn collect_candidates(files: &[ContextFile]) -> Vec<Candidate> {
 
 fn strip_list_prefix(line: &str) -> &str {
     let line = line.trim_start_matches(['-', '*', '+']).trim_start();
-    let mut chars = line.char_indices();
     let mut end_digits = 0usize;
-    while let Some((idx, ch)) = chars.next() {
+    for (idx, ch) in line.char_indices() {
         if ch.is_ascii_digit() {
             end_digits = idx + ch.len_utf8();
             continue;

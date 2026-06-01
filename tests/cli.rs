@@ -87,6 +87,60 @@ fn init_creates_config_without_overwriting_by_default() {
 }
 
 #[test]
+fn scan_detects_missing_package_script() {
+    let root = temp_project("missing-command");
+    fs::write(
+        root.join("package.json"),
+        r#"{"scripts":{"test":"vitest"},"dependencies":{"react":"latest"}}"#,
+    )
+    .unwrap();
+    fs::write(
+        root.join("README.md"),
+        "# Demo\n\nRun `npm run build` before release.\n",
+    )
+    .unwrap();
+
+    let output = run(&["scan", "--json"], &root);
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let json: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let issues = json.get("issues").and_then(|v| v.as_array()).unwrap();
+    assert!(issues
+        .iter()
+        .any(|issue| issue.get("rule_id").and_then(|v| v.as_str()) == Some("missing-command")));
+
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn scan_respects_include_flag() {
+    let root = temp_project("include");
+    fs::write(
+        root.join("NOTES.md"),
+        "# Notes\n\nIgnore tests and skip validation.\n",
+    )
+    .unwrap();
+
+    let output = run(&["scan", "--json", "--include", "NOTES.md"], &root);
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let json: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    assert_eq!(json.get("files_scanned").and_then(|v| v.as_u64()), Some(1));
+
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
 fn generate_agents_writes_default_output() {
     let root = temp_project("generate");
     fs::write(root.join("README.md"), "# Demo\n\nLint AI context files.\n").unwrap();

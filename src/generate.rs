@@ -1,9 +1,9 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use anyhow::Result;
 
 use crate::config::ContextlintConfig;
-use crate::discovery::{discover_context_files, normalize_path};
+use crate::discovery::discover_context_files;
 use crate::parser::parse_context_file;
 
 pub fn generate_agents(root: &Path, output: &Path, from: Option<&str>) -> Result<()> {
@@ -134,16 +134,14 @@ fn extract_rules(files: &[crate::model::ContextFile]) -> Vec<String> {
             }
             let rule = trimmed.trim_start_matches(['-', '*']).trim();
             let lower = rule.to_lowercase();
-            if lower.contains("use ")
+            let actionable = lower.contains("use ")
                 || lower.contains("run ")
                 || lower.contains("do not")
                 || lower.contains("don't")
                 || lower.contains("follow")
-                || lower.contains("ask before")
-            {
-                if !rules.contains(&rule.to_string()) && rule.len() <= 180 {
-                    rules.push(rule.to_string());
-                }
+                || lower.contains("ask before");
+            if actionable && !rules.contains(&rule.to_string()) && rule.len() <= 180 {
+                rules.push(rule.to_string());
             }
         }
     }
@@ -156,11 +154,4 @@ fn capitalize(value: &str) -> String {
         Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
         None => String::new(),
     }
-}
-
-#[allow(dead_code)]
-fn rel(root: &Path, path: &PathBuf) -> String {
-    path.strip_prefix(root)
-        .map(normalize_path)
-        .unwrap_or_else(|_| normalize_path(path))
 }
