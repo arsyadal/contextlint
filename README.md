@@ -32,6 +32,15 @@ Implemented:
 
 ## Install
 
+Via Homebrew:
+
+```bash
+brew tap arsyadal/tap
+brew install contextlint
+```
+
+Via Cargo:
+
 ```bash
 cargo install contextlint
 ```
@@ -39,6 +48,8 @@ cargo install contextlint
 Upgrade:
 
 ```bash
+brew upgrade contextlint
+# or
 cargo install contextlint --force
 ```
 
