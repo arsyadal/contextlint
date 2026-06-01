@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2
+
+- Add composite GitHub Action via `uses: arsyadal/contextlint@v0.1.2`.
+- Add release workflow for Linux, macOS, and Windows binaries.
+- Add CLI and configuration docs.
+- Add security policy, contributing guide, and issue templates.
+- Expand README with GitHub Action usage and docs links.
+
 ## 0.1.1
 
 - Add inline ignore support with `contextlint-ignore` and `contextlint-ignore-next-line`.

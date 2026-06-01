@@ -1,0 +1,35 @@
+name: ContextLint
+
+description: Lint, score, and compress AI agent context files
+
+author: arsyadal
+
+inputs:
+  path:
+    description: Project path to scan
+    required: false
+    default: .
+  fail-under:
+    description: Minimum score required to pass
+    required: false
+    default: "70"
+  args:
+    description: Extra contextlint scan arguments
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+    - name: Install ContextLint
+      shell: bash
+      run: cargo install --path "$GITHUB_ACTION_PATH" --locked
+    - name: Run ContextLint
+      shell: bash
+      run: contextlint scan --path "${{ inputs.path }}" --fail-under "${{ inputs.fail-under }}" ${{ inputs.args }}
+
+branding:
+  icon: check-circle
+  color: green

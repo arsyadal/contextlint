@@ -6,7 +6,7 @@ ContextLint scans `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, Cursor rules, `READM
 
 ## Status
 
-Early MVP in Rust.
+Production-usable Rust CLI. Current focus: reliable local scanning, CI usage, and low-friction install.
 
 Implemented:
 
@@ -17,6 +17,8 @@ Implemented:
 - `contextlint report --format json`
 - `contextlint init`
 - `contextlint generate agents`
+- `contextlint completions <shell>`
+- GitHub Action via `uses: arsyadal/contextlint@v0.1.2`
 - File discovery for common AI context files
 - Approximate token estimation
 - Duplicate instruction detection
@@ -26,11 +28,18 @@ Implemented:
 - Missing backtick file reference detection
 - Missing command/script detection
 - Basic dependency/technology mismatch detection
+- Inline and config ignore support
 
 ## Install
 
 ```bash
 cargo install contextlint
+```
+
+Upgrade:
+
+```bash
+cargo install contextlint --force
 ```
 
 ## Install from source
@@ -50,6 +59,29 @@ contextlint report --format json
 contextlint init
 contextlint completions bash > contextlint.bash
 contextlint generate agents --output AGENTS.generated.md
+```
+
+More docs:
+
+- [CLI reference](docs/cli.md)
+- [Configuration](docs/config.md)
+
+## GitHub Action
+
+```yaml
+name: ContextLint
+
+on:
+  pull_request:
+
+jobs:
+  contextlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arsyadal/contextlint@v0.1.2
+        with:
+          fail-under: "70"
 ```
 
 ## Default scanned files
@@ -139,6 +171,7 @@ Score bands:
 ```bash
 cargo fmt --check
 cargo check --locked
+cargo clippy --locked -- -D warnings
 cargo test --locked
 cargo run -- scan
 ```
