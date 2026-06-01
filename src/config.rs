@@ -12,6 +12,13 @@ pub struct ContextlintConfig {
     pub score_threshold: Option<u8>,
     #[serde(rename = "tokenEstimator")]
     pub token_estimator: String,
+    /// Ignore patterns for issue filtering.
+    ///
+    /// Supported forms:
+    /// - `rule-id`
+    /// - `path/glob/**`
+    /// - `rule-id:path/glob/**`
+    pub ignore: Vec<String>,
     pub rules: RuleConfig,
 }
 
@@ -47,6 +54,7 @@ impl Default for ContextlintConfig {
             ],
             score_threshold: None,
             token_estimator: "approximate".into(),
+            ignore: Vec::new(),
             rules: RuleConfig::default(),
         }
     }

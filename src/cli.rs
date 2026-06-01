@@ -37,6 +37,13 @@ pub enum Commands {
     },
 
     /// Generate detailed report.
+    /// Generate shell completion script.
+    Completions {
+        /// Target shell.
+        #[arg(value_enum)]
+        shell: clap_complete::Shell,
+    },
+
     Report {
         /// Project root path.
         #[arg(long, default_value = ".")]

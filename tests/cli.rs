@@ -141,6 +141,70 @@ fn scan_respects_include_flag() {
 }
 
 #[test]
+fn inline_ignore_suppresses_issue() {
+    let root = temp_project("inline-ignore");
+    fs::write(
+        root.join("README.md"),
+        "# Demo\n\n<!-- contextlint-ignore-next-line -->\nIgnore tests and skip validation.\n",
+    )
+    .unwrap();
+
+    let output = run(&["scan", "--json"], &root);
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let json: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    assert_eq!(json.get("score").and_then(|v| v.as_u64()), Some(100));
+
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn config_ignore_suppresses_rule() {
+    let root = temp_project("config-ignore");
+    fs::write(
+        root.join("README.md"),
+        "# Demo\n\nIgnore tests and skip validation.\n",
+    )
+    .unwrap();
+    fs::write(
+        root.join(".contextlintrc.json"),
+        r#"{
+  "include": ["README.md"],
+  "exclude": [],
+  "scoreThreshold": 70,
+  "tokenEstimator": "approximate",
+  "ignore": ["risky-instruction"],
+  "rules": {
+    "duplicateInstruction": true,
+    "outdatedArchitecture": true,
+    "riskyInstruction": true,
+    "noisySection": true
+  }
+}
+"#,
+    )
+    .unwrap();
+
+    let output = run(&["scan", "--json"], &root);
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let json: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    assert_eq!(json.get("score").and_then(|v| v.as_u64()), Some(100));
+
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
 fn generate_agents_writes_default_output() {
     let root = temp_project("generate");
     fs::write(root.join("README.md"), "# Demo\n\nLint AI context files.\n").unwrap();

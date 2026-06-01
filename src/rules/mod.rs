@@ -3,13 +3,15 @@ pub mod noisy;
 pub mod outdated;
 pub mod risky;
 
+use std::collections::HashMap;
 use std::path::Path;
 
 use anyhow::Result;
+use globset::Glob;
 
 use crate::config::ContextlintConfig;
 use crate::discovery::discover_context_files;
-use crate::model::{ContextFile, ScanResult};
+use crate::model::{ContextFile, Issue, ScanResult};
 use crate::parser::parse_context_file;
 use crate::score::{estimate_waste_tokens, score_issues};
 
@@ -40,6 +42,8 @@ pub fn scan_project(
         issues.extend(outdated::detect(root, &files));
     }
 
+    issues.retain(|issue| !is_ignored(issue, &files, config));
+
     issues.sort_by(|a, b| {
         severity_rank(b.severity)
             .cmp(&severity_rank(a.severity))
@@ -60,6 +64,62 @@ pub fn scan_project(
         files: file_summaries,
         issues,
     })
+}
+
+fn is_ignored(issue: &Issue, files: &[ContextFile], config: &ContextlintConfig) -> bool {
+    is_config_ignored(issue, &config.ignore) || is_inline_ignored(issue, files)
+}
+
+fn is_config_ignored(issue: &Issue, patterns: &[String]) -> bool {
+    patterns.iter().any(|pattern| {
+        let pattern = pattern.trim();
+        if pattern.is_empty() {
+            return false;
+        }
+
+        if pattern == issue.rule_id || pattern == issue.file_path {
+            return true;
+        }
+
+        if let Some((rule, path_pattern)) = pattern.split_once(':') {
+            return rule == issue.rule_id && glob_matches(path_pattern, &issue.file_path);
+        }
+
+        glob_matches(pattern, &issue.file_path)
+    })
+}
+
+fn glob_matches(pattern: &str, value: &str) -> bool {
+    Glob::new(pattern)
+        .ok()
+        .and_then(|glob| glob.compile_matcher().is_match(value).then_some(()))
+        .is_some()
+}
+
+fn is_inline_ignored(issue: &Issue, files: &[ContextFile]) -> bool {
+    let Some(line_no) = issue.start_line else {
+        return false;
+    };
+    let Some(file) = files.iter().find(|file| file.path == issue.file_path) else {
+        return false;
+    };
+
+    let lines: HashMap<usize, &str> = file
+        .content
+        .lines()
+        .enumerate()
+        .map(|(idx, line)| (idx + 1, line))
+        .collect();
+
+    let same_line = lines
+        .get(&line_no)
+        .is_some_and(|line| line.contains("contextlint-ignore"));
+    let previous_line = line_no > 1
+        && lines
+            .get(&(line_no - 1))
+            .is_some_and(|line| line.contains("contextlint-ignore-next-line"));
+
+    same_line || previous_line
 }
 
 fn severity_rank(severity: crate::model::Severity) -> u8 {

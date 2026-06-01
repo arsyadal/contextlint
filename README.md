@@ -48,6 +48,7 @@ contextlint scan --path ./my-project --fail-under 70
 contextlint report --format markdown --output contextlint-report.md
 contextlint report --format json
 contextlint init
+contextlint completions bash > contextlint.bash
 contextlint generate agents --output AGENTS.generated.md
 ```
 
@@ -79,12 +80,36 @@ Example `.contextlintrc.json`:
   "exclude": ["node_modules/**", "dist/**", "build/**", "docs/archive/**"],
   "scoreThreshold": 70,
   "tokenEstimator": "approximate",
+  "ignore": ["risky-instruction:docs/archive/**"],
   "rules": {
     "duplicateInstruction": true,
     "outdatedArchitecture": true,
     "riskyInstruction": true,
     "noisySection": true
   }
+}
+```
+
+## Ignoring issues
+
+Inline ignore:
+
+```md
+<!-- contextlint-ignore-next-line -->
+Ignore tests during refactor.
+
+Ignore tests during refactor. <!-- contextlint-ignore -->
+```
+
+Config ignore supports rule IDs, path globs, and `rule-id:path/glob/**`:
+
+```json
+{
+  "ignore": [
+    "duplicate-instruction",
+    "docs/archive/**",
+    "risky-instruction:docs/stale-context/**"
+  ]
 }
 ```
 

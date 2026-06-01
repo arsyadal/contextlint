@@ -10,7 +10,7 @@ mod score;
 mod token;
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 use cli::{Cli, Commands, GenerateCommands, ReportFormat};
 
 fn main() {
@@ -46,6 +46,11 @@ fn run() -> Result<()> {
                     std::process::exit(1);
                 }
             }
+        }
+        Commands::Completions { shell } => {
+            let mut command = Cli::command();
+            let name = command.get_name().to_string();
+            clap_complete::generate(shell, &mut command, name, &mut std::io::stdout());
         }
         Commands::Report {
             path,
