@@ -4,6 +4,8 @@ Lint, score, and compress your AI agent context files.
 
 ContextLint scans `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, Cursor rules, `README.md`, `docs/**/*.md`, and GitHub Copilot instructions to find duplicate, outdated, risky, and token-wasting context before Claude, Cursor, Codex, Gemini, or another AI coding agent reads it.
 
+![ContextLint demo](assets/contextlint-demo.gif)
+
 ## Status
 
 Production-usable Rust CLI. Current focus: reliable local scanning, CI usage, and low-friction install.
