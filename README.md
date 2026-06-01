@@ -27,6 +27,12 @@ Implemented:
 - Missing command/script detection
 - Basic dependency/technology mismatch detection
 
+## Install
+
+```bash
+cargo install contextlint
+```
+
 ## Install from source
 
 ```bash
