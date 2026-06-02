@@ -13,7 +13,6 @@ const MARKERS: &[&str] = &[
 ];
 
 const TECH_MAP: &[(&str, &str)] = &[
-    ("express.js", "express"),
     ("express", "express"),
     ("nestjs", "@nestjs/core"),
     ("next.js", "next"),
@@ -22,7 +21,20 @@ const TECH_MAP: &[(&str, &str)] = &[
     ("svelte", "svelte"),
     ("django", "django"),
     ("flask", "flask"),
+    ("fastapi", "fastapi"),
+    ("laravel", "laravel/framework"),
+    ("symfony", "symfony/symfony"),
+    ("spring boot", "spring-boot"),
     ("tailwind", "tailwindcss"),
+    ("prisma", "@prisma/client"),
+    ("drizzle", "drizzle-orm"),
+    ("vitest", "vitest"),
+    ("jest", "jest"),
+    ("playwright", "@playwright/test"),
+    ("cypress", "cypress"),
+    ("redux", "redux"),
+    ("graphql", "graphql"),
+    ("apollo", "@apollo/client"),
 ];
 
 #[derive(Debug, Default)]

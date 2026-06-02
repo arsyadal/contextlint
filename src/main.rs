@@ -1,5 +1,6 @@
 mod cli;
 mod config;
+mod diff;
 mod discovery;
 mod generate;
 mod model;
@@ -46,6 +47,11 @@ fn run() -> Result<()> {
                     std::process::exit(1);
                 }
             }
+        }
+        Commands::Diff { base, path } => {
+            let config = config::load_config(&path)?;
+            let result = diff::diff_project(&path, &base, &config)?;
+            diff::print_terminal(&path, &result);
         }
         Commands::Completions { shell } => {
             let mut command = Cli::command();

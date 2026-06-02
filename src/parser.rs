@@ -10,17 +10,21 @@ pub fn parse_context_file(root: &Path, path: &Path) -> Result<ContextFile> {
     let content = std::fs::read_to_string(path)?;
     let rel = path.strip_prefix(root).unwrap_or(path);
     let rel_path = normalize_path(rel);
-    let file_type = classify_file(&rel_path);
-    let sections = parse_sections(&rel_path, &content);
-    let estimated_tokens = estimate_tokens(&content);
+    Ok(parse_context_file_from_content(&rel_path, &content))
+}
 
-    Ok(ContextFile {
-        path: rel_path,
+pub fn parse_context_file_from_content(rel_path: &str, content: &str) -> ContextFile {
+    let file_type = classify_file(rel_path);
+    let sections = parse_sections(rel_path, content);
+    let estimated_tokens = estimate_tokens(content);
+
+    ContextFile {
+        path: rel_path.to_string(),
         file_type,
-        content,
+        content: content.to_string(),
         estimated_tokens,
         sections,
-    })
+    }
 }
 
 pub fn classify_file(rel_path: &str) -> ContextFileType {

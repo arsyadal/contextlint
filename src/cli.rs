@@ -36,7 +36,14 @@ pub enum Commands {
         exclude: Vec<String>,
     },
 
-    /// Generate detailed report.
+    Diff {
+        #[arg(default_value = "main")]
+        base: String,
+
+        #[arg(long, default_value = ".")]
+        path: PathBuf,
+    },
+
     /// Generate shell completion script.
     Completions {
         /// Target shell.

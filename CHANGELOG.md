@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add `contextlint diff <commit>` to compare current context against a git commit or branch.
+- Show token delta, score delta, new issues, and resolved issues between commits.
+
 ## 0.1.3
 
 - Add demo fixture for messy AI-agent context.

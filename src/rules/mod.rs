@@ -28,21 +28,29 @@ pub fn scan_project(
         files.push(parse_context_file(root, &path)?);
     }
 
+    scan_files(root, &files, config)
+}
+
+pub fn scan_files(
+    root: &Path,
+    files: &[ContextFile],
+    config: &ContextlintConfig,
+) -> Result<ScanResult> {
     let mut issues = Vec::new();
     if config.rules.duplicate_instruction {
-        issues.extend(duplicate::detect(&files));
+        issues.extend(duplicate::detect(files));
     }
     if config.rules.noisy_section {
-        issues.extend(noisy::detect(&files));
+        issues.extend(noisy::detect(files));
     }
     if config.rules.risky_instruction {
-        issues.extend(risky::detect(&files));
+        issues.extend(risky::detect(files));
     }
     if config.rules.outdated_architecture {
-        issues.extend(outdated::detect(root, &files));
+        issues.extend(outdated::detect(root, files));
     }
 
-    issues.retain(|issue| !is_ignored(issue, &files, config));
+    issues.retain(|issue| !is_ignored(issue, files, config));
 
     issues.sort_by(|a, b| {
         severity_rank(b.severity)
@@ -66,7 +74,7 @@ pub fn scan_project(
     })
 }
 
-fn is_ignored(issue: &Issue, files: &[ContextFile], config: &ContextlintConfig) -> bool {
+pub fn is_ignored(issue: &Issue, files: &[ContextFile], config: &ContextlintConfig) -> bool {
     is_config_ignored(issue, &config.ignore) || is_inline_ignored(issue, files)
 }
 
@@ -122,7 +130,7 @@ fn is_inline_ignored(issue: &Issue, files: &[ContextFile]) -> bool {
     same_line || previous_line
 }
 
-fn severity_rank(severity: crate::model::Severity) -> u8 {
+pub fn severity_rank(severity: crate::model::Severity) -> u8 {
     match severity {
         crate::model::Severity::Critical => 4,
         crate::model::Severity::High => 3,
