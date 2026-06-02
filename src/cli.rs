@@ -44,6 +44,12 @@ pub enum Commands {
         path: PathBuf,
     },
 
+    /// Start MCP (Model Context Protocol) server.
+    Mcp {
+        #[arg(long, default_value = ".")]
+        path: PathBuf,
+    },
+
     /// Generate shell completion script.
     Completions {
         /// Target shell.

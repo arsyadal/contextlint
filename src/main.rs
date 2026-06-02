@@ -3,6 +3,7 @@ mod config;
 mod diff;
 mod discovery;
 mod generate;
+mod mcp;
 mod model;
 mod parser;
 mod report;
@@ -14,14 +15,15 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser};
 use cli::{Cli, Commands, GenerateCommands, ReportFormat};
 
-fn main() {
-    if let Err(error) = run() {
+#[tokio::main]
+async fn main() {
+    if let Err(error) = run().await {
         eprintln!("contextlint: {error}");
         std::process::exit(1);
     }
 }
 
-fn run() -> Result<()> {
+async fn run() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
@@ -52,6 +54,9 @@ fn run() -> Result<()> {
             let config = config::load_config(&path)?;
             let result = diff::diff_project(&path, &base, &config)?;
             diff::print_terminal(&path, &result);
+        }
+        Commands::Mcp { path } => {
+            mcp::run_mcp_server(path).await?;
         }
         Commands::Completions { shell } => {
             let mut command = Cli::command();
