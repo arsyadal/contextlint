@@ -26,7 +26,9 @@ pub async fn run_mcp_server(root: PathBuf) -> Result<()> {
         .with_tool(ScanTool { state })
         .build();
 
-    McpStdioServer::run(config).await.map_err(|e| anyhow::anyhow!("MCP Server error: {}", e))?;
+    McpStdioServer::run(config)
+        .await
+        .map_err(|e| anyhow::anyhow!("MCP Server error: {}", e))?;
 
     Ok(())
 }

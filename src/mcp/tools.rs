@@ -1,7 +1,7 @@
-use std::sync::Arc;
 use model_context_protocol::{BoxFuture, McpTool, McpToolDefinition, ToolCallResult, ToolContent};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::sync::Arc;
 
 use crate::mcp::server::McpState;
 use crate::rules::scan_project;
@@ -42,10 +42,11 @@ impl McpTool for ScanTool {
     fn call<'a>(&'a self, args: Value) -> BoxFuture<'a, ToolCallResult> {
         let state = Arc::clone(&self.state);
         Box::pin(async move {
-            let params: ScanParams = serde_json::from_value(args)
-                .map_err(|e| format!("Invalid arguments: {}", e))?;
+            let params: ScanParams =
+                serde_json::from_value(args).map_err(|e| format!("Invalid arguments: {}", e))?;
 
-            let scan_path = params.path
+            let scan_path = params
+                .path
                 .map(|p| state.root.join(p))
                 .unwrap_or_else(|| state.root.clone());
 
@@ -68,7 +69,9 @@ impl McpTool for ScanTool {
                 status: status.to_string(),
             };
 
-            Ok(vec![ToolContent::text(serde_json::to_string_pretty(&response).unwrap())])
+            Ok(vec![ToolContent::text(
+                serde_json::to_string_pretty(&response).unwrap(),
+            )])
         })
     }
 }
